@@ -24,10 +24,14 @@ var MooRainbow = new Class({
 		id: 'mooRainbow',
 		prefix: 'moor-',
 		imgPath: 'images/',
+		getImage: function(file){
+			return this.options.imgPath + file;
+		},
 		startColor: [255, 0, 0],
 		wheel: false,
 		onComplete: Class.empty,
-		onChange: Class.empty
+		onChange: Class.empty,
+		setOnStart: false
 	},
 
 	initialize: function(el, options) {
@@ -57,7 +61,7 @@ var MooRainbow = new Class({
 		this.pickerPos.x = this.snippet('curPos').l + this.snippet('curSize', 'int').w;
 		this.pickerPos.y = this.snippet('curPos').t + this.snippet('curSize', 'int').h;
 
-		this.manualSet(this.options.startColor);
+		if (this.options.setOnStart) this.manualSet(this.options.startColor);
 
 		this.pickerPos.x = this.snippet('curPos').l + this.snippet('curSize', 'int').w;
 		this.pickerPos.y = this.snippet('curPos').t + this.snippet('curSize', 'int').h;
@@ -425,23 +429,23 @@ var MooRainbow = new Class({
 
 		var ov = new Element('img', {
 			'styles': {'background-color': '#fff', 'position': 'relative', 'zIndex': 2},
-			'src': this.options.imgPath + 'moor_woverlay.png',
+			'src': this.options.getImage.apply(this, ['moor_woverlay.png']),
 			'class': prefix + 'overlay'
 		}).inject(div);
 
 		var ov2 = new Element('img', {
 			'styles': {'position': 'absolute', 'top': 0, 'left': 0, 'zIndex': 2},
-			'src': this.options.imgPath + 'moor_boverlay.png',
+			'src': this.options.getImage.apply(this, ['moor_boverlay.png']),
 			'class': prefix + 'overlay'
 		}).inject(div);
 
 		if (window.ie6) {
 			div.setStyle('overflow', '');
 			var src = ov.src;
-			ov.src = this.options.imgPath + 'blank.gif';
+			ov.src = this.options.getImage.apply(this, ['blank.gif']);
 			ov.style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='" + src + "', sizingMethod='scale')";
 			src = ov2.src;
-			ov2.src = this.options.imgPath + 'blank.gif';
+			ov2.src = this.options.getImage.apply(this, ['blank.gif']);
 			ov2.style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='" + src + "', sizingMethod='scale')";
 		}
 		ov.width = ov2.width = div.getStyle('width').toInt();
@@ -456,7 +460,7 @@ var MooRainbow = new Class({
 
 		var sl = new Element('img', {
 			'styles': {'position': 'absolute', 'z-index': 2},
-			'src': this.options.imgPath + 'moor_slider.png',
+			'src': this.options.getImage.apply(this, ['moor_slider.png']),
 			'class': prefix + 'slider'
 		}).inject(box);
 		this.layout.slider = Slick.find(document, '#' + idPrefix + 'slider');
@@ -530,7 +534,7 @@ var MooRainbow = new Class({
 		this.arrHSB = [this.HueInput, this.SatuInput, this.BrighInput];
 		this.okButton = Slick.find(document, '#' + idPrefix + 'okButton');
 
-		this.layout.cursor.setStyle('background-image', 'url(' + this.options.imgPath + 'moor_cursor.gif)');
+		this.layout.cursor.setStyle('background-image', 'url(' + this.options.getImage.apply(this, ['moor_cursor.gif']));
 
 		if (!window.khtml) this.hide();
 	},
